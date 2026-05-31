@@ -13,6 +13,7 @@ taille d'un channel In = 140 bytes
 [0:8] = name of InA
 [132] = gain en signed hex
 [133] = 0x01 si gain > -2.4dB sinon 0x00
+[134] = 0x01 si inverse sinon 0x00
 
 padding channel Out = 0x24e bytes (avant Out1)
 taille d'un channel Out = 104 bytes
@@ -25,6 +26,17 @@ taille d'un channel Out = 104 bytes
     1010 => InB & InD
 [96] = gain en signed hex
 [97] = 0x01 si gain > -2.4dB sinon 0x00
+[98] = 0x01 si inverse sinon 0x00
+
+après les channel Out
+
+[0x58e] = mute sur 4 bits, 0 is muted and 1 is not
+    0001 = InA unmuted
+    0010 = InB unmuted
+    1010 = InB & InD unmuted
+[0x590] = mute sur 8 bits
+    11110101 = InB & InD unmuted
+    00001000 = InD muted
 """
 
 basePRS = "./test.prs"
@@ -50,9 +62,11 @@ with open(basePRS, "rb") as fin:
         for i in range(N_OUT)
     ]
 
-    # for i in range(IN_SIZE):
-    #     if ins[0][i] != ins[1][i]:
-    #         print(f"{i=}, {ins[0][i]=}, {ins[1][i]=}")
+    a = 0
+    b = 1
+    for i in range(IN_SIZE):
+        if ins[a][i] != ins[b][i]:
+            print(f"{i=}, {ins[a][i]=}, {ins[b][i]=}")
 
     a = 0
     b = 1
