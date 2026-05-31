@@ -14,6 +14,11 @@ taille d'un channel In = 140 bytes
 [132] = gain en signed hex
 [133] = 0x01 si gain > -2.4dB sinon 0x00
 [134] = 0x01 si inverse sinon 0x00
+[138] = link on 4 bits
+    0001 => InA alone
+    0101 => InA & InC linked
+    1000 => InD alone
+    0000 => already linked to another In
 
 padding channel Out = 0x24e bytes (avant Out1)
 taille d'un channel Out = 104 bytes
@@ -27,6 +32,10 @@ taille d'un channel Out = 104 bytes
 [96] = gain en signed hex
 [97] = 0x01 si gain > -2.4dB sinon 0x00
 [98] = 0x01 si inverse sinon 0x00
+[102] = link on 8 bits
+    00000001 => Out1 alone
+    01000101 => Out1 & Out3 & Out7 linked
+    00000000 => already linked to another Out
 
 après les channel Out
 
@@ -63,13 +72,13 @@ with open(basePRS, "rb") as fin:
     ]
 
     a = 0
-    b = 1
+    b = 2
     for i in range(IN_SIZE):
         if ins[a][i] != ins[b][i]:
             print(f"{i=}, {ins[a][i]=}, {ins[b][i]=}")
 
-    a = 0
-    b = 1
+    a = 1
+    b = 2
     for i in range(OUT_SIZE):
         if outs[a][i] != outs[b][i]:
             print(f"{i=}, {outs[a][i]=}, {outs[b][i]=}")
